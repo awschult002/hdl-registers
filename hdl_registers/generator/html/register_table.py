@@ -56,28 +56,17 @@ class HtmlRegisterTableGenerator(HtmlGeneratorCommon):
             return ""
 
         html = f"""\
-{self.header}
-<table>
-<thead>
-  <tr>
-    <th>Name</th>
-    <th>Index</th>
-    <th>Address</th>
-    <th>Mode</th>
-    <th>Default value</th>
-    <th>Description</th>
-  </tr>
-</thead>
-<tbody>"""
-
+{self.header}"""
         for register_object in self.iterate_register_objects():
+            html += f"""\
+          """
             if isinstance(register_object, Register):
                 html += self._annotate_register(register_object)
             else:
                 html += self._annotate_register_array(register_object)
 
-        html += """
-</tbody>
+            html += """
+    </tbody>
 </table>"""
 
         return html
@@ -138,14 +127,29 @@ repeated {register_object.length} times.
 
         description = self._html_translator.translate(register.description)
         html = f"""
-  <tr>
-    <td><strong>{register.name}</strong></td>
-    <td>{index}</td>
-    <td>{address_readable}</td>
-    <td>{register.mode.name}</td>
-    <td>{self._to_hex_string(register.default_value, num_nibbles=1)}</td>
-    <td>{description}</td>
-  </tr>"""
+         <h2>{register.name}</h2>
+         <p>{description}</p>
+         <table>
+             <thead>
+                 <tr>
+                     <th>Name</th>
+                     <th>Index</th>
+                     <th>Address</th>
+                     <th>Mode</th>
+                     <th>Default value</th>
+                     <th>Description</th>
+                </tr>        
+                <tr><strong>
+                   <td>{register.name}</td>
+                   <td>{index}</td>
+                   <td>{address_readable}</td>
+                   <td>{register.mode.name}</td>
+                   <td>{self._to_hex_string(register.default_value, num_nibbles=1)}</td>
+                   <td></td>
+              </strong></tr>
+            </thead>
+            <tbody>"""
+  
 
         for field in register.fields:
             html += self._annotate_field(field)
